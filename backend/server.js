@@ -10,14 +10,14 @@ dotenv.config()
 const app = express
 
 // Initialize MongoDB
-const connectDB = () => {
+const connectDB = async () => {
   try {
-      const conn = await mongoose.connect(process.env.MONGO_URI, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        useCreateIndex: true,
-      })
-      console.log(`MongoDB Connected: ${conn.connection.host}`)
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useCreateIndex: true,
+    })
+    console.log(`MongoDB Connected: ${conn.connection.host}`)
   } catch (error) {
     console.log('Error when connecting MongoDB')
     process.exit(1)
@@ -32,18 +32,15 @@ const __dirname = path.resolve()
 
 // Initialize Routes
 if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '/frontend/build')))
 
-    app.use(express.static(path.join(__dirname, '/frontend/build')))
-
-    app.get('*', (req, res) => {
-        res.send(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
-    })
-
-
+  app.get('*', (req, res) => {
+    res.send(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  })
 } else {
-    app.get('/', (req, res) => {
-        res.send("API IS RUNNING ....")
-    })
+  app.get('/', (req, res) => {
+    res.send('API IS RUNNING ....')
+  })
 }
 
 // Set app to liste to PORT 5000
