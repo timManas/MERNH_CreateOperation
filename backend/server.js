@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 // Initialize Express
-const app = express
+const app = express()
 
 // Initialize MongoDB
 const connectDB = async () => {
