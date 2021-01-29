@@ -2,6 +2,7 @@ import path from 'path'
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import { insertUser, readUser } from './crud.js'
 
 // Initialize DotEnv File
 dotenv.config()
@@ -10,14 +11,18 @@ dotenv.config()
 const app = express()
 
 // Initialize MongoDB
+let conn
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-      useCreateIndex: true,
-    })
-    console.log(`MongoDB Connected: ${conn.connection.host}`)
+    conn = await mongoose
+      .connect(process.env.MONGO_URI, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        useCreateIndex: true,
+      })
+      .then((result) => {
+        console.log(`MongoDB isConnected`)
+      })
   } catch (error) {
     console.log('Error when connecting MongoDB')
     process.exit(1)
@@ -46,3 +51,9 @@ if (process.env.NODE_ENV === 'production') {
 // Set app to liste to PORT 5000
 const PORT = process.env.PORT || 5000
 app.listen(PORT, console.log(`Server is running on Port: ${PORT}`))
+
+// CREATE
+insertUser()
+
+// READ
+// readUser()
